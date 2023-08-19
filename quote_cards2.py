@@ -85,7 +85,7 @@ def style_card(my_coin, my_price, my_change, my_color, my_gradient, my_gradient_
             },
         ),
         # Quoteblock set width/height/padding/background - Also can be used to fit more decimals...
-        # Note that color here for the background is transparent so it doesn't clash with the overall theme background
+        # Note that color here for the background is transparent, so it doesn't clash with the overall theme background
         style={
             "width": "270px",
             "height": "130px",
@@ -119,16 +119,19 @@ def make_card(my_name, my_change, my_price):
     }
 
     # Define the cases and their corresponding values
-        # we use a dictionary called switch_cases to define the different cases and their corresponding values. The keys in the dictionary
-    # are the conditions, and the values are tuples containing the color values. We then use the get() method to retrieve the values
-    # based on the condition. If none of the conditions match, it falls back to the default case, which represents no change in price.
+    # we use a dictionary called switch_cases to define the different cases and their corresponding values. The keys
+    # in the dictionary are the conditions, and the values are tuples containing the color values. We then use the get()
+    # method to retrieve the values based on the condition. If none of the conditions match, it falls back to the
+    # default case, which represents no change in price.
     switch_cases = {
-        my_change < 0: (
+        my_change
+        < 0: (
             colors["text_decline"],
             colors["gradient_decline"],
             colors["gradient_border_decline"],
         ),
-        my_change > 0: (
+        my_change
+        > 0: (
             colors["text_rally"],
             colors["gradient_rally"],
             colors["gradient_border_rally"],
@@ -136,13 +139,19 @@ def make_card(my_name, my_change, my_price):
     }
 
     # Get the values based on the condition
-    color, gradient_fill, gradient_border = switch_cases.get(True, (
-        colors["text_unchanged"],
-        colors["gradient_unchanged"],
-        colors["gradient_border_unchanged"],
-    ))
+    color, gradient_fill, gradient_border = switch_cases.get(
+        True,
+        (
+            colors["text_unchanged"],
+            colors["gradient_unchanged"],
+            colors["gradient_border_unchanged"],
+        ),
+    )
 
-    return style_card(my_name, my_price, my_change, color, gradient_fill, gradient_border)
+    return style_card(
+        my_name, my_price, my_change, color, gradient_fill, gradient_border
+    )
+
 
 @app.callback(Output(cards, "children"), Input(interval, "n_intervals"))
 def update_cards(_):
@@ -153,7 +162,7 @@ def update_cards(_):
         return dash.no_update
 
     # Columns we don't need from data -- feel free to change if you want to use these
-    dropList = [
+    drop_list = [
         "image",
         "market_cap",
         "market_cap_rank",
@@ -178,7 +187,7 @@ def update_cards(_):
 
     # Renamed columns - original:new name -- You can change these, but you need to alter their references in the rest of
     # the code...
-    renamedPairsList = {
+    renamed_pairs_list = {
         "id": "asset_id",
         "symbol": "ticker",
         "name": "full_name",
@@ -191,10 +200,10 @@ def update_cards(_):
     df_quotes = pd.DataFrame.from_dict(coin_data, orient="columns")
 
     # Drop columns we don't need - helps when debugging
-    df_quotes = df_quotes.drop(columns=dropList, axis=1)
+    df_quotes = df_quotes.drop(columns=drop_list, axis=1)
 
     # Rename columns for ease of reference/debugging
-    df_quotes = df_quotes.rename(columns=renamedPairsList)
+    df_quotes = df_quotes.rename(columns=renamed_pairs_list)
 
     # Sort based on volume, descending order
     df_quotes = df_quotes.sort_values(by="volume", ascending=False)
@@ -203,9 +212,6 @@ def update_cards(_):
     df_quotes = df_quotes.reset_index(drop=True)
 
     # Using list comprehension to create coin_cards
-    # In this optimized version, we use list comprehension to create the coin_cards list, eliminating the need for a loop with explicit
-    # indexing. We also use a dictionary comprehension to create the quote_block_vars dictionary, simplifying the assignment of quote
-    # block variables.
     coin_cards = [
         make_card(coin_name, net_change, price)
         for coin_name, net_change, price in zip(
@@ -229,7 +235,9 @@ def update_cards(_):
         "quoteBlock_12",
     ]
 
-    quote_block_vars = {var: card for var, card in zip(quote_block_var_names, coin_cards)}
+    quote_block_vars = {
+        var: card for var, card in zip(quote_block_var_names, coin_cards)
+    }
 
     # Simple nested structure with main Div and a Grid inside...
     card_layout = [
@@ -255,6 +263,7 @@ def update_cards(_):
     ]
 
     return card_layout
+
 
 # Run the App
 if __name__ == "__main__":
