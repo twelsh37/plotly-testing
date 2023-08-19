@@ -103,6 +103,9 @@ app.layout = dbc.Container(
 
 
 def make_card(my_name, my_change, my_price):
+    # Here we use a dictionary called colors to store the color values based on different conditions. This approach
+    # simplifies the code by eliminating multiple variable assignments and reducing redundancy. The dictionary
+    # allows for easy access to the color values based on the condition, making the code more efficient and pythonic.
     colors = {
         "text_decline": "#C70000",  # Red
         "text_rally": "#00C700",  # Green
@@ -116,6 +119,9 @@ def make_card(my_name, my_change, my_price):
     }
 
     # Define the cases and their corresponding values
+        # we use a dictionary called switch_cases to define the different cases and their corresponding values. The keys in the dictionary
+    # are the conditions, and the values are tuples containing the color values. We then use the get() method to retrieve the values
+    # based on the condition. If none of the conditions match, it falls back to the default case, which represents no change in price.
     switch_cases = {
         my_change < 0: (
             colors["text_decline"],
@@ -183,16 +189,23 @@ def update_cards(_):
 
     # Process scraped data into pandas dataframe
     df_quotes = pd.DataFrame.from_dict(coin_data, orient="columns")
+
     # Drop columns we don't need - helps when debugging
     df_quotes = df_quotes.drop(columns=dropList, axis=1)
+
     # Rename columns for ease of reference/debugging
     df_quotes = df_quotes.rename(columns=renamedPairsList)
+
     # Sort based on volume, descending order
     df_quotes = df_quotes.sort_values(by="volume", ascending=False)
+
     # Reindex dataframe for ease of reference
     df_quotes = df_quotes.reset_index(drop=True)
 
     # Using list comprehension to create coin_cards
+    # In this optimized version, we use list comprehension to create the coin_cards list, eliminating the need for a loop with explicit
+    # indexing. We also use a dictionary comprehension to create the quote_block_vars dictionary, simplifying the assignment of quote
+    # block variables.
     coin_cards = [
         make_card(coin_name, net_change, price)
         for coin_name, net_change, price in zip(
